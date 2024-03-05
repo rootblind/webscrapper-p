@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import multiprocessing as mp
 import time
-import math
+
 
 # scraping books to scrape
 # the iterative program

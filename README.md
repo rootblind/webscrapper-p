@@ -198,7 +198,7 @@ Scraping 50 pages from books.toscrape.com.
 
 Let the secvential execution be the baseline, then we can conclude that, in our code, 3 parallel processes are ~55.72% faster than one and 50 parallel processes are ~73.06% faster. But the speed increase from 3 parallel processes to 50 is only about 26.54%, resulting that the more processes we add, while it gets faster, each process increases the speed by smaller and smaller amounts, therefore consuming more memory and making it inefficient.
 
-As reference, the processor used in running those tests:
+As reference, the processor used in running those tests on windows10:
 ![processor](https://i.imgur.com/WFMJcse.png)
 ## Author
 

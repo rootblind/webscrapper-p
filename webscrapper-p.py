@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import multiprocessing as mp
 import time
+import json
 
 
 # scraping books to scrape
@@ -10,9 +11,10 @@ import time
 
 data = []
 
-def scrape_one_page(page):
+def scrape_one_page(page, config):
     print("Current page: ", page)
-    url = f"https://books.toscrape.com/catalogue/page-{page}.html"
+
+    url = config["site"].format(page)
     page = requests.get(url).text
     doc = BeautifulSoup(page, "html.parser")
 
@@ -28,10 +30,10 @@ def scrape_one_page(page):
                 
             data.append(item)
 
-def scrape_books(start, finish):
+def scrape_books(start, finish, config):
     for current_page in range(start, finish):
         print("Current page: ", current_page)
-        url = f"https://books.toscrape.com/catalogue/page-{current_page}.html"
+        url = config["site"].format(current_page)
         page = requests.get(url).text
         doc = BeautifulSoup(page, "html.parser")
 
@@ -49,13 +51,14 @@ def scrape_books(start, finish):
 
 if __name__ == "__main__":
     
-    
+    configFile = open("config.json", "r")
+    config = json.loads(configFile.read())
     
     # the 3 parallel processes
     
-    p1 = mp.Process(target=scrape_books, args=(1, 17,))
-    p2 = mp.Process(target=scrape_books, args=(17, 34,))
-    p3 = mp.Process(target=scrape_books, args=(34, 51,))
+    p1 = mp.Process(target=scrape_books, args=(1, 17,config,))
+    p2 = mp.Process(target=scrape_books, args=(17, 34,config,))
+    p3 = mp.Process(target=scrape_books, args=(34, 51,config,))
     start = time.time()
     p1.start()
     p2.start()
@@ -67,7 +70,7 @@ if __name__ == "__main__":
     print("Execution time 3 parallel processes: ", end-start)
 
     # a process for each page
-    processes = [mp.Process(target=scrape_one_page, args=(i,)) for i in range(1, 51)]
+    processes = [mp.Process(target=scrape_one_page, args=(i,config,)) for i in range(1, 51)]
     start = time.time()
     for process in processes:
         process.start()
@@ -78,7 +81,7 @@ if __name__ == "__main__":
     print("Execution time 50 parallel processes: ", end-start)
     # iterative program
     start = time.time()
-    scrape_books(1, 51)
+    scrape_books(1, 51,config)
     end = time.time()
     print("Execution time iterative: ", end-start)
 
